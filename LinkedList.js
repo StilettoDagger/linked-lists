@@ -12,7 +12,7 @@ export default class LinkedList {
 			this.tail = new Node(value);
 			this.head = this.tail;
 		} else {
-			this.tail.next = new Node(value);
+			this.tail.next = new Node(value, null, this.tail);
 			this.tail = this.tail.next;
 		}
 		this.size++;
@@ -24,6 +24,8 @@ export default class LinkedList {
 			this.tail = this.head;
 		} else {
 			this.head = new Node(value, this.head);
+			const next = this.head.next;
+			next.prev = this.head;
 		}
 		this.size++;
 	}
@@ -43,6 +45,7 @@ export default class LinkedList {
 			temp = temp.next;
 			i++;
 		}
+		return null;
 	}
 
 	pop() {
@@ -57,9 +60,8 @@ export default class LinkedList {
             this.size = 0;
 			return temp;
 		}
-		const prev = this.at(this.size - 2);
-		prev.next = null;
-		this.tail = prev;
+		this.tail = this.tail.prev;
+		this.tail.next = null;
         this.size--;
 		return temp;
 	}
@@ -116,9 +118,11 @@ export default class LinkedList {
 		if (index < 0 || index > this.size) {
 			throw RangeError("Invalid index.");
 		}
-		const prevNode = this.at(index - 1);
-		const newNode = new Node(value, this.at(index));
-		prevNode.next = newNode;
+		const curr = this.at(index);
+		const prev = curr.prev;
+		const newNode = new Node(value, curr, prev);
+		prev.next = newNode;
+		curr.prev = newNode;
 		this.size++;
 	}
 
@@ -127,21 +131,27 @@ export default class LinkedList {
 			throw RangeError("Invalid index.");
 		}
 		if (index === this.size - 1) {
+			console.log("popping")
 			return this.pop();
 		}
 
-		this.size--;
 		if (index === 0) {
+			this.size--;
 			let temp = this.head;
 			this.head = this.head.next;
+			this.head.prev = null;
 			temp.next = null;
 			return temp;
 		}
+		
 		const curr = this.at(index);
 		const next = curr.next;
-		const prev = this.at(index - 1);
+		const prev = curr.prev;
 		prev.next = next;
+		next.prev = prev;
 		curr.next = null;
+		curr.prev = null;
+		this.size--;
 		return curr;
 	}
 }

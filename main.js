@@ -56,3 +56,6 @@ list.pop();
 list.pop();
 
 console.log(list.toString());
+
+list.insertAt(10, 0);
+console.log(list.toString());

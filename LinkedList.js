@@ -131,7 +131,6 @@ export default class LinkedList {
 			throw RangeError("Invalid index.");
 		}
 		if (index === this.size - 1) {
-			console.log("popping")
 			return this.pop();
 		}
 
